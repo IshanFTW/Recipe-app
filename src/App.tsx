@@ -25,7 +25,9 @@ interface Meal{
   strIngredient18: string | null;
   strIngredient19: string | null;
   strIngredient20: string | null;
+  [key: `strIngredient${number}`]: string | null;
 }
+
 
 function App() {
   const [meals, setMeals] = useState<Meal[]>([]);
