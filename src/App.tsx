@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useRef, useState } from "react";
 
-interface MealType {
+interface Meal{
   idMeal: string;
   strMeal: string;
   strInstructions: string;
@@ -27,85 +27,66 @@ interface MealType {
   strIngredient20: string | null;
 }
 
-interface RecipeType {
-  name: string;
-  instructions: string;
-  ingredients: string[];
-}
-
 function App() {
-  const [recipes, setRecipes] = useState<RecipeType[]>([]);
-  const [recommendations, setRecommendations] = useState<MealType[]>([]);
+  const [meals, setMeals] = useState<Meal[]>([]);
+  const [selectedMeal, setSelectedMeal] = useState<Meal | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
-  // Fetch recipes based on the search input
-  const fetchRecommendations = async (query: string) => {
-    const response = await axios.get<{ meals: MealType[] | null }>(`https://www.themealdb.com/api/json/v1/1/search.php?s=${query}`);
-    const meals = response.data.meals || [];
-    setRecommendations(meals.slice(0, 8)); // Limit to the first 5 recommendations
+  const fetchMeals = async (name: string) => {
+    const response = await axios.get(`https://www.themealdb.com/api/json/v1/1/search.php?s=${name}`);
+    setMeals(response.data.meals || []);
   };
 
-  // Fetch a single recipe when a recommendation is clicked
-  const fetchRecipe = async (name: string) => {
-    const response = await axios.get<{ meals: MealType[] | null }>(`https://www.themealdb.com/api/json/v1/1/search.php?s=${name}`);
-    const meal = response.data.meals ? response.data.meals[0] : null;
-    
-    if (meal) {
-      const ingredients = [];
-      for (let i = 1; i <= 20; i++) {
-        const ingredient = meal[`strIngredient${i}` as keyof MealType];
-        if (ingredient) ingredients.push(ingredient);
-      }
-
-      setRecipes([{ name: meal.strMeal, instructions: meal.strInstructions, ingredients }]);
-      setRecommendations([]); 
+  const handleSearch = () => {
+    const searchValue = inputRef.current?.value;
+    if (searchValue) {
+      fetchMeals(searchValue);
     }
   };
 
-  // Handle input change
-  const handleInputChange = () => {
-    const query = inputRef.current?.value;
-    if (query) {
-      fetchRecommendations(query);
-    } else {
-      setRecommendations([]);
-    }
-  };
-
-  // Handle recommendation click
-  const handleRecommendationClick = (name: string) => {
-    fetchRecipe(name);
-    if (inputRef.current) {
-      inputRef.current.value = name;
-    }
+  const handleSelectMeal = (meal: Meal) => {
+    setSelectedMeal(meal);
+    inputRef.current!.value = meal.strMeal;
+    setMeals([]);
   };
 
   return (
-    <div>
-      <input 
-        type="text" 
-        placeholder="Search for a recipe..." 
-        ref={inputRef} 
-        onChange={handleInputChange}
-      />
-      <ul>
-        {recommendations.map((rec) => (
-          <li key={rec.idMeal} onClick={() => handleRecommendationClick(rec.strMeal)}>
-            {rec.strMeal}
-          </li>
-        ))}
-      </ul>
-      {recipes.map((recipe, index) => (
-        <div key={index}>
-          <h2>{recipe.name}</h2>
-          <p>{recipe.instructions}</p>
-          <ul>
-            {recipe.ingredients.map((ing, i) => (
-              <li key={i}>{ing}</li>
-            ))}
+    <div className="min-h-screen bg-gray-100 flex flex-col items-center p-6">
+      <h1 className="text-4xl font-bold mb-6">Recipe Finder</h1>
+      <div className="w-full max-w-md">
+        <input
+          type="text"
+          placeholder="Search for a recipe..."
+          ref={inputRef}
+          className="w-full p-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+          onChange={handleSearch}
+        />
+        <ul className="mt-2 border border-gray-300 rounded-lg shadow-md bg-white">
+          {meals.slice(0, 8).map((meal) => (
+            <li
+              key={meal.idMeal}
+              className="p-2 cursor-pointer hover:bg-gray-200"
+              onClick={() => handleSelectMeal(meal)}
+            >
+              {meal.strMeal}
+            </li>
+          ))}
+        </ul>
+      </div>
+      {selectedMeal && (
+        <div className="mt-8 w-full max-w-2xl bg-white p-6 rounded-lg shadow-lg">
+          <h2 className="text-2xl font-bold mb-4">{selectedMeal.strMeal}</h2>
+          <h3 className="text-xl font-semibold mb-2">Ingredients</h3>
+          <ul className="list-disc list-inside mb-4">
+            {[...Array(20)].map((_, i) => {
+              const ingredient = selectedMeal[`strIngredient${i + 1}`];
+              return ingredient ? <li key={i}>{ingredient}</li> : null;
+            })}
           </ul>
+          <h3 className="text-xl font-semibold mb-2">Instructions</h3>
+          <p>{selectedMeal.strInstructions}</p>
         </div>
-      ))}
+      )}
     </div>
   );
 }
