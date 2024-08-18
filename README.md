@@ -1,50 +1,46 @@
-# React + TypeScript + Vite
+# Recipe Finder
+Recipe Finder is a React-based web application that allows users to search for meal recipes and get suggestions as they type. The app fetches recipes from TheMealDB API and displays detailed information about the selected meal, including ingredients and cooking instructions.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Demo
+You can view the live demo of the app here: Recipe Finder
 
-Currently, two official plugins are available:
+## Features
+**Live Search**: As you type in the search box, the app provides up to 5 meal suggestions that match your input.<br />
+**Meal Selection**: Click on any suggested meal to see its detailed recipe, including ingredients and instructions.<br/>
+**Responsive Design**: The app is styled with Tailwind CSS, making it responsive and visually appealing on all devices.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Technologies Used
+**React**: A JavaScript library for building user interfaces.<br/>
+**TypeScript**: A superset of JavaScript that adds static types.<br/>
+**Axios**: A promise-based HTTP client for making API requests.<br/>
+**TheMealDB API**: A free API to get meal recipes.<br/>
+**Tailwind CSS**: A utility-first CSS framework for styling.<br/>
 
-## Expanding the ESLint configuration
+## Installation
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+1. Clone the repository:
 ```
-
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+git clone https://github.com/your-username/recipe-finder.git
 ```
+2. Navigate to the project directory:
+```
+cd Recipe-app
+```
+3. Install the dependencies:
+```
+npm install
+```
+4. Start the development server:
+```
+npm run dev
+```
+5. Open your browser and visit:
+
+http://localhost:3000
+
+## Usage
+Type the name of the recipe you want to search for in the input box.<br/>
+As you type, suggestions will appear below the input.<br/>
+Click on any suggestion to view the recipe details.<br/>
+The selected recipe's ingredients and instructions will be displayed on the screen.<br/>
+
