@@ -5,7 +5,7 @@ Recipe Finder is a React-based web application that allows users to search for m
 You can view the live demo of the app here: Recipe Finder
 
 ## Features
-**Live Search**: As you type in the search box, the app provides up to 5 meal suggestions that match your input.<br />
+**Live Search**: As you type in the search box, the app provides meal suggestions that match your input.<br />
 **Meal Selection**: Click on any suggested meal to see its detailed recipe, including ingredients and instructions.<br/>
 **Responsive Design**: The app is styled with Tailwind CSS, making it responsive and visually appealing on all devices.
 
@@ -20,7 +20,7 @@ You can view the live demo of the app here: Recipe Finder
 
 1. Clone the repository:
 ```
-git clone https://github.com/your-username/recipe-finder.git
+git clone https://github.com/your-username/Recipe-app.git
 ```
 2. Navigate to the project directory:
 ```
