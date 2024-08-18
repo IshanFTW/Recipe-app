@@ -1,64 +1,113 @@
 import axios from "axios";
-import { useRef, useState } from "react"
+import { useRef, useState } from "react";
 
-interface RecipeType{
-  id: string,
-  name: string,
-  instructions: string,
-  ingredients: string[],
+interface MealType {
+  idMeal: string;
+  strMeal: string;
+  strInstructions: string;
+  strIngredient1:  string | null;
+  strIngredient2:  string | null;
+  strIngredient3:  string | null;
+  strIngredient4:  string | null;
+  strIngredient5:  string | null;
+  strIngredient6:  string | null;
+  strIngredient7:  string | null;
+  strIngredient8:  string | null;
+  strIngredient9:  string | null;
+  strIngredient10: string | null;
+  strIngredient11: string | null;
+  strIngredient12: string | null;
+  strIngredient13: string | null;
+  strIngredient14: string | null;
+  strIngredient15: string | null;
+  strIngredient16: string | null;
+  strIngredient17: string | null;
+  strIngredient18: string | null;
+  strIngredient19: string | null;
+  strIngredient20: string | null;
+}
+
+interface RecipeType {
+  name: string;
+  instructions: string;
+  ingredients: string[];
 }
 
 function App() {
   const [recipes, setRecipes] = useState<RecipeType[]>([]);
-  const inputRef = useRef<HTMLInputElement | null>(null)
+  const [recommendations, setRecommendations] = useState<MealType[]>([]);
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
-  async function fetchRecipe(name: string) {
-    const response = await axios.get(`https://www.themealdb.com/api/json/v1/1/search.php?s=${name}`);
-    console.log(response);
+  // Fetch recipes based on the search input
+  const fetchRecommendations = async (query: string) => {
+    const response = await axios.get<{ meals: MealType[] | null }>(`https://www.themealdb.com/api/json/v1/1/search.php?s=${query}`);
     const meals = response.data.meals || [];
+    setRecommendations(meals.slice(0, 8)); // Limit to the first 5 recommendations
+  };
+
+  // Fetch a single recipe when a recommendation is clicked
+  const fetchRecipe = async (name: string) => {
+    const response = await axios.get<{ meals: MealType[] | null }>(`https://www.themealdb.com/api/json/v1/1/search.php?s=${name}`);
+    const meal = response.data.meals ? response.data.meals[0] : null;
     
-    const fetchRecipes = meals.map((meal: any) => {
+    if (meal) {
       const ingredients = [];
       for (let i = 1; i <= 20; i++) {
-        const ingredient = meal[`strIngredient${i}`];
+        const ingredient = meal[`strIngredient${i}` as keyof MealType];
         if (ingredient) ingredients.push(ingredient);
-    }
-    return {
-      id: meal.idMeal,
-      name: meal.strMeal,
-      instructions: meal.strInstructions,
-      ingredients,
-    };
-  });
-
-      setRecipes(fetchRecipes);
-    }
-    const handleSearch = () => {
-      const searchValue = inputRef.current?.value;
-      if(searchValue){
-        fetchRecipe(searchValue);
       }
+
+      setRecipes([{ name: meal.strMeal, instructions: meal.strInstructions, ingredients }]);
+      setRecommendations([]); 
     }
-  
+  };
+
+  // Handle input change
+  const handleInputChange = () => {
+    const query = inputRef.current?.value;
+    if (query) {
+      fetchRecommendations(query);
+    } else {
+      setRecommendations([]);
+    }
+  };
+
+  // Handle recommendation click
+  const handleRecommendationClick = (name: string) => {
+    fetchRecipe(name);
+    if (inputRef.current) {
+      inputRef.current.value = name;
+    }
+  };
+
   return (
     <div>
-      <input type="text" placeholder="Recipe" ref={inputRef} />
-      <button onClick={handleSearch}>Search</button>
-      <div>
-        {recipes.map((recipe) => (
-          <div key={recipe.id}>
-            <h2>{recipe.name}</h2>
-            <p>{recipe.instructions}</p>
-            <ul>
-              {recipe.ingredients.map((ingredient, index) => (
-                <li key={index}>{ingredient}</li>
-              ))}
-            </ul>
-          </div>
+      <input 
+        type="text" 
+        placeholder="Search for a recipe..." 
+        ref={inputRef} 
+        onChange={handleInputChange}
+      />
+      <ul>
+        {recommendations.map((rec) => (
+          <li key={rec.idMeal} onClick={() => handleRecommendationClick(rec.strMeal)}>
+            {rec.strMeal}
+          </li>
         ))}
-      </div>
+      </ul>
+      {recipes.map((recipe, index) => (
+        <div key={index}>
+          <h2>{recipe.name}</h2>
+          <p>{recipe.instructions}</p>
+          <ul>
+            {recipe.ingredients.map((ing, i) => (
+              <li key={i}>{ing}</li>
+            ))}
+          </ul>
+        </div>
+      ))}
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
