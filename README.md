@@ -2,7 +2,7 @@
 Recipe Finder is a React-based web application that allows users to search for meal recipes and get suggestions as they type. The app fetches recipes from TheMealDB API and displays detailed information about the selected meal, including ingredients and cooking instructions.
 
 ## Demo
-You can view the live demo of the app here: Recipe Finder
+You can view the live demo of the app here: [Recipe Finder](https://recipe-app-pi-kohl.vercel.app/)
 
 ## Features
 **Live Search**: As you type in the search box, the app provides meal suggestions that match your input.<br />
@@ -36,7 +36,7 @@ npm run dev
 ```
 5. Open your browser and visit:
 
-http://localhost:3000
+http://localhost:5173/
 
 ## Usage
 Type the name of the recipe you want to search for in the input box.<br/>
